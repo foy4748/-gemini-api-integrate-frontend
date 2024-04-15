@@ -17,8 +17,10 @@ const useGemini = (apiEndpoint = "http://localhost:3001/gemini-ai") => {
   ]
   */
   const [chats, setChats] = useState([]);
+
   const [isLoading, setIsloading] = useState(false);
-  // Interact with
+
+  // Interact with Gemini
   const askGemini = async (inputText, callBack) => {
     const payload = {
       prompt: inputText,
@@ -45,6 +47,8 @@ const useGemini = (apiEndpoint = "http://localhost:3001/gemini-ai") => {
     const inputField = e.target.textInput;
     const inputString = inputField.value;
 
+    inputField.value = "";
+
     // Setting user prompt to state
     setChats((prevChats) => {
       return [...prevChats, { message: inputString, isSender: true }];
@@ -59,8 +63,6 @@ const useGemini = (apiEndpoint = "http://localhost:3001/gemini-ai") => {
         { message: result.gemini_response, isSender: false },
       ];
     });
-
-    inputField.value = "";
   };
 
   const payload = {
