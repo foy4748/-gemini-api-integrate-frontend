@@ -3,15 +3,21 @@ import "./App.css";
 import SingleMessage from "./components/SingleMessage";
 import useGemini from "./hooks/useGemini";
 import LoadingMessage from "./components/LoadingMessage";
+import { useRef } from "react";
 
 function App() {
-  const { handleTextInput, chats, isLoading } = useGemini();
+  const chatContainer = useRef(null);
+  const { handleTextInput, chats, isLoading } = useGemini(chatContainer);
+
   return (
     <>
       <div className="flex justify-center items-center h-screen">
         <div className="chatContainer w-full h-full lg:w-[90%] lg:h-[90%]  bg-blue-gray-600 border flex flex-col justify-end rounded-lg">
           {/* Chat Messages */}
-          <div className="w-full h-full flex flex-col items-center  mb-4 overflow-y-auto">
+          <div
+            ref={chatContainer}
+            className="w-full h-full flex flex-col items-center  mb-4 overflow-y-auto"
+          >
             <div className="mt-8"></div>
             {chats.map((chat, idx) => {
               return (
@@ -27,7 +33,10 @@ function App() {
 
           {/* Input Field */}
           <div className="w-full flex justify-center  mb-4 pb-2">
-            <form onSubmit={handleTextInput} className="text-white w-9/12">
+            <form
+              onSubmit={(e) => handleTextInput(e, chatContainer)}
+              className="text-white w-9/12"
+            >
               <Input
                 name="textInput"
                 color="white"

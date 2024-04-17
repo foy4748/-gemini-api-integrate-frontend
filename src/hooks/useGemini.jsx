@@ -1,6 +1,10 @@
+import { useEffect } from "react";
 import { useState } from "react";
 
-const useGemini = (apiEndpoint = "http://localhost:3001/gemini-ai") => {
+const useGemini = (
+  chatContainer,
+  apiEndpoint = "http://localhost:3001/gemini-ai"
+) => {
   // Declaring States
 
   //// Storing chat messages
@@ -20,13 +24,23 @@ const useGemini = (apiEndpoint = "http://localhost:3001/gemini-ai") => {
 
   const [isLoading, setIsloading] = useState(false);
 
+  // For automatic scroll to
+  // Bottom of the chat
+  // After entering or receiving a message.
+  // Thanks to this stackOverflow page
+  // https://stackoverflow.com/questions/55118437/react-auto-scroll-to-bottom-on-a-chat-container
+  useEffect(() => {
+    if (chats.length) {
+      chatContainer.current.scrollTop = chatContainer.current.scrollHeight;
+    }
+  }, [chatContainer, chats]);
+
   // Interact with Gemini
   const askGemini = async (inputText, callBack) => {
     const payload = {
       prompt: inputText,
     };
 
-    console.log(payload);
     const res = await fetch(apiEndpoint, {
       method: "POST",
       headers: {
@@ -35,9 +49,11 @@ const useGemini = (apiEndpoint = "http://localhost:3001/gemini-ai") => {
       body: JSON.stringify(payload),
     });
     const result = await res.json();
+
     if (callBack) {
       callBack();
     }
+
     return result;
   };
 
